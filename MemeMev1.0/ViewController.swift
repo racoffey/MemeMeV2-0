@@ -8,6 +8,14 @@
 
 import UIKit
 
+
+struct Meme {
+    var topText: String
+    var bottomText: String
+    var image: UIImage
+    var memedImage: UIImage
+}
+
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var imagePickerView: UIImageView!
@@ -18,74 +26,99 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var navBar: UINavigationBar!
     
-//    let topTextDelegate = UITextFieldDelegate()
-//    let bottomTextFieldDelegate = UITextFieldDelegate()
     
+    //Define default textfield parameters
     let memeTextAttributes = [
         NSStrokeColorAttributeName: UIColor.blackColor(),
         NSForegroundColorAttributeName: UIColor.whiteColor(),
         NSFontAttributeName: UIFont(name: "HelveticaNeue-CondensedBlack", size: 40)!,
         NSStrokeWidthAttributeName: -3, NSBackgroundColorAttributeName: UIColor.clearColor()]
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         //Hide photo button if no camera source available
         takePhoto.enabled = UIImagePickerController.isSourceTypeAvailable(UIImagePickerControllerSourceType.Camera)
         
+        //Establish current class as delegate for text field objects
         topText.delegate = self
         bottomText.delegate = self
         
+        //Set initial view parameters
+        setFirstView()
+        view.backgroundColor = UIColor.darkGrayColor()
+    }
+    
+    
+    func setFirstView() {
+        //Set characteristics of text fields
         topText.defaultTextAttributes = memeTextAttributes
         bottomText.defaultTextAttributes = memeTextAttributes
-        topText.hidden = true
-        bottomText.hidden = true
-        topText.text = "TOP"
         topText.textAlignment = .Center
-        bottomText.text = "BOTTOM"
+        //topText.size
         bottomText.textAlignment = .Center
         
-        shareButton.enabled = false
-
+        //Create initial text
+        topText.text = "TOP"
+        bottomText.text = "BOTTOM"
         
-        // Do any additional setup after loading the view, typically from a nib.
+        //Hide share button until image is selected
+        shareButton.enabled = false
+        
+        //Reset image
+        imagePickerView.image = nil
+        
+        return
     }
+    
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
+        //Subscriber to notifications from keyboard object
         subscribeToKeyboardNotifications()
     }
     
+    
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
+        //Unsubscribe to notifications from keyboard object
         unsubscribeFromKeyboardNotifications()
     }
     
+    
     func subscribeToKeyboardNotifications() {
+        //Receive notifications when keyboard is shown and removed
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
     
     
     func unsubscribeFromKeyboardNotifications() {
+        //Cancel notifications
         NSNotificationCenter.defaultCenter().removeObserver(self, name: UIKeyboardWillShowNotification, object: nil)
     }
     
+    
     func keyboardWillShow(notification: NSNotification) {
+        //Get geometric info regarding keyboard size
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
         let keyboardHeight = keyboardSize.CGRectValue().height
         
+        //If editing is started in bottom textfield, frame shall be moved up to avoid being covered by the keyboard, if not already moved up.
         if bottomText.isFirstResponder() && view.frame.origin.y == 0 {
             view.frame.origin.y -= keyboardHeight
         }
     }
     
+    
     func keyboardWillHide(notification: NSNotification) {
+        //Get dictionary of info related to the keyboard notificaton
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
         let keyboardHeight = keyboardSize.CGRectValue().height
         
+        //If editing is stopped in bottom textfield, frame is moved back down as keyboard is removed, if frame not already lowered.
         if bottomText.isFirstResponder() && view.frame.origin.y != 0 {
             view.frame.origin.y += keyboardHeight
         }
@@ -93,52 +126,50 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
-        
-  
+        //Assign image from image picker to this class, sizing it to fill the available screen size. Share button is enabled and picker controller is dismissed.
         if let image = info["UIImagePickerControllerOriginalImage"] as? UIImage {
-            imagePickerView.contentMode = .ScaleAspectFill
+            imagePickerView.contentMode = .ScaleAspectFit
             imagePickerView.image = image
-            topText.hidden = false
-            bottomText.hidden = false
             shareButton.enabled = true
         }
         self.dismissViewControllerAnimated(true, completion: nil)
     }
     
+    
     func textFieldShouldReturn(textField: UITextField) -> Bool {
+        //Resign first responsder, when text field is returned.
         textField.resignFirstResponder()
         return true
     }
     
+    
     func textFieldDidBeginEditing(textField: UITextField) {
+        //Only clear text when editing for the first time
         if textField.text == "TOP" || textField.text == "BOTTOM" {
            textField.text = ""
         }
     }
     
-    func textFieldDidEndEditing(textField: UITextField) {
-/*        if view.frame.origin.y != 0 {
-            view.frame.origin.y = 0
+    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+        //Increases width of textfield as user types each character and recenters textfield. This ensures user can continue to see all text whilst typing.
+        if textField.frame.size.width <= view.frame.size.width {
+                textField.frame.size.width += 20
+                textField.frame.origin.x -= 10
         }
-*/    }
-    
-/*    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        <#code#>
+        return true
     }
-*/
+    
     
     func generateMemedImage() -> UIImage {
-        
         //Hide tool bar and navbar
         toolBar.hidden = true
         navBar.hidden = true
         
-        //Render view of and image
+        //Render view as an image
         UIGraphicsBeginImageContext(self.view.frame.size)
         self.view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
         let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        
         
         //Present tool bar and nav bar again
         toolBar.hidden = false
@@ -147,38 +178,49 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return memedImage
     }
     
-
+    func saveMeme(memedImage: UIImage) {
+        let meme = Meme(topText: topText.text!, bottomText: bottomText.text!, image: imagePickerView.image!
+            , memedImage: memedImage)
+    }
+    
+    
     @IBAction func takePhoto(sender: UIBarButtonItem) {
+        //Instantiate image picker controller, allow the current class to be its delegate, use the Camera as the source and present the view controller.
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = UIImagePickerControllerSourceType.Camera
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }
 
+    
     @IBAction func pickAnImage(sender: UIBarButtonItem) {
-        print("Arrived in pickAnImage function")
+        //Instantiate image picker controller, allow the current class to be its delegate, use the Photolibrary as the source and present the view controller.
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
         self.presentViewController(imagePicker, animated: true, completion: nil)
     }
-
+    
 
     @IBAction func bottomText(sender: UITextField) {
-        "Arrived in bottom text function"
+        //Needed to secure correct functioning of BottomText notification
     }
+  
     
     @IBAction func shareImage(sender: UIBarButtonItem) {
-        print("Arrived in share function")
+        //Generate the memed image and instantiate the meme class object with image, text and memed image
         let memedImage = generateMemedImage()
-        var meme = Meme(topText: topText.text!, bottomText: bottomText.text!, image: imagePickerView.image!
-            , memedImage: memedImage)
-        print (memedImage)
-        
+        //Instantiate the activity controller with the memedImage and present the controller
         let activityController = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
         self.presentViewController(activityController, animated: true, completion: nil)
-        activityController.completionWithItemsHandler(
+        //activityController.completionWithItemsHandler(
         
     }
+    
+    @IBAction func cancelAction(sender: UIBarButtonItem) {
+        //Reset screen to initial parameters
+        setFirstView()
+    }
+    
 }
 
