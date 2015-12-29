@@ -34,9 +34,6 @@
                                 <rect key="frame" x="-25" y="-30" width="97" height="30"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <textInputTraits key="textInputTraits" autocapitalizationType="allCharacters" autocorrectionType="no" spellCheckingType="no"/>
-                                <variation key="widthClass=compact" misplaced="YES">
-                                    <rect key="frame" x="196" y="60" width="8" height="54"/>
-                                </variation>
                             </textField>
                             <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="R2V-Qx-bzl">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
@@ -107,20 +104,20 @@
                                 <exclude reference="doj-T1-qxL"/>
                             </mask>
                             <mask key="constraints">
-                                <exclude reference="8s9-nA-IiL"/>
-                                <exclude reference="9ed-bj-fJ5"/>
-                                <exclude reference="Fjd-ji-F3d"/>
-                                <exclude reference="8eo-rn-bBg"/>
-                                <exclude reference="SV0-lF-AMi"/>
-                                <exclude reference="ctx-Dl-rku"/>
-                                <exclude reference="iqP-N6-F5d"/>
                                 <exclude reference="cUj-pS-dXq"/>
                                 <exclude reference="cIL-bL-fJO"/>
                                 <exclude reference="piI-OZ-WL5"/>
+                                <exclude reference="8s9-nA-IiL"/>
+                                <exclude reference="9ed-bj-fJ5"/>
+                                <exclude reference="Fjd-ji-F3d"/>
                                 <exclude reference="Bll-lB-eN9"/>
                                 <exclude reference="cDF-Si-VnI"/>
                                 <exclude reference="ii5-GW-Y7o"/>
                                 <exclude reference="mBf-Tm-mAn"/>
+                                <exclude reference="8eo-rn-bBg"/>
+                                <exclude reference="SV0-lF-AMi"/>
+                                <exclude reference="ctx-Dl-rku"/>
+                                <exclude reference="iqP-N6-F5d"/>
                             </mask>
                         </variation>
                         <variation key="heightClass=compact" layoutMarginsFollowReadableWidth="NO"/>
@@ -134,20 +131,20 @@
                                 <include reference="doj-T1-qxL"/>
                             </mask>
                             <mask key="constraints">
-                                <include reference="8s9-nA-IiL"/>
-                                <include reference="9ed-bj-fJ5"/>
-                                <include reference="Fjd-ji-F3d"/>
-                                <include reference="8eo-rn-bBg"/>
-                                <include reference="SV0-lF-AMi"/>
-                                <include reference="ctx-Dl-rku"/>
-                                <include reference="iqP-N6-F5d"/>
                                 <include reference="cUj-pS-dXq"/>
                                 <include reference="cIL-bL-fJO"/>
                                 <include reference="piI-OZ-WL5"/>
+                                <include reference="8s9-nA-IiL"/>
+                                <include reference="9ed-bj-fJ5"/>
+                                <include reference="Fjd-ji-F3d"/>
                                 <include reference="Bll-lB-eN9"/>
                                 <include reference="cDF-Si-VnI"/>
                                 <include reference="ii5-GW-Y7o"/>
                                 <include reference="mBf-Tm-mAn"/>
+                                <include reference="8eo-rn-bBg"/>
+                                <include reference="SV0-lF-AMi"/>
+                                <include reference="ctx-Dl-rku"/>
+                                <include reference="iqP-N6-F5d"/>
                             </mask>
                         </variation>
                     </view>

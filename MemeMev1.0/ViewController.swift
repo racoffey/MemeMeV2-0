@@ -67,6 +67,11 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //Reset image
         imagePickerView.image = nil
         
+        //Add subviews in order to secure layer hierachy
+        view.addSubview(imagePickerView)
+        view.addSubview(topText)
+        view.addSubview(bottomText)
+        
         return
     }
     
@@ -131,7 +136,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             imagePickerView.image = image
             shareButton.enabled = true
         }
-        self.dismissViewControllerAnimated(true, completion: nil)
+        dismissViewControllerAnimated(true, completion: nil)
     }
     
     
@@ -168,7 +173,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         //Render view as an image
         UIGraphicsBeginImageContext(self.view.frame.size)
-        self.view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
+        view.drawViewHierarchyInRect(self.view.frame, afterScreenUpdates: true)
         let memedImage: UIImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         
@@ -192,7 +197,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = source
-        self.presentViewController(imagePicker, animated: true, completion: nil)
+        presentViewController(imagePicker, animated: true, completion: nil)
     }
 
 
@@ -226,7 +231,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         }
         
         //Present the controller
-        self.presentViewController(activityController, animated: true, completion: nil)
+        presentViewController(activityController, animated: true, completion: nil)
     }
     
     
