@@ -55,7 +55,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         topText.defaultTextAttributes = memeTextAttributes
         bottomText.defaultTextAttributes = memeTextAttributes
         topText.textAlignment = .Center
-        //topText.size
         bottomText.textAlignment = .Center
         
         //Create initial text
@@ -74,20 +73,20 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        //Subscriber to notifications from keyboard object
+        //Subscribe to notifications from keyboard object
         subscribeToKeyboardNotifications()
     }
     
     
     override func viewWillDisappear(animated: Bool) {
         super.viewWillDisappear(animated)
-        //Unsubscribe to notifications from keyboard object
+        //Unsubscribe to notifications from keyboard object when closing view controller
         unsubscribeFromKeyboardNotifications()
     }
     
     
     func subscribeToKeyboardNotifications() {
-        //Receive notifications when keyboard is shown and removed
+        //Receive notifications when keyboard is shown and hidden
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:", name: UIKeyboardWillShowNotification, object: nil)
         NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:", name: UIKeyboardWillHideNotification, object: nil)
     }
@@ -105,7 +104,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
         let keyboardHeight = keyboardSize.CGRectValue().height
         
-        //If editing is started in bottom textfield, frame shall be moved up to avoid being covered by the keyboard, if not already moved up.
+        //If editing is started in bottom textfield, frame shall be moved up to avoid textfield being covered by the keyboard, if not already moved up
         if bottomText.isFirstResponder() && view.frame.origin.y == 0 {
             view.frame.origin.y -= keyboardHeight
         }
@@ -113,7 +112,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func keyboardWillHide(notification: NSNotification) {
-        //Get dictionary of info related to the keyboard notificaton
+        //Get geometric info regarding keyboard size
         let userInfo = notification.userInfo
         let keyboardSize = userInfo![UIKeyboardFrameEndUserInfoKey] as! NSValue // of CGRect
         let keyboardHeight = keyboardSize.CGRectValue().height
@@ -126,7 +125,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
-        //Assign image from image picker to this class, sizing it to fill the available screen size. Share button is enabled and picker controller is dismissed.
+        //Assign image from image picker to this class, scaling it to fit in the image view. Share button is enabled and picker controller is dismissed.
         if let image = info["UIImagePickerControllerOriginalImage"] as? UIImage {
             imagePickerView.contentMode = .ScaleAspectFit
             imagePickerView.image = image
@@ -148,11 +147,13 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if textField.text == "TOP" || textField.text == "BOTTOM" {
            textField.text = ""
         }
+        return
     }
     
+    
     func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-        //Increases width of textfield as user types each character and recenters textfield. This ensures user can continue to see all text whilst typing.
-        if textField.frame.size.width <= view.frame.size.width {
+        //Increases width of textfield as user types each character and recenters textfield. This ensures user can continue to see all text whilst typing
+        if textField.frame.size.width < (view.frame.size.width - 20) {
                 textField.frame.size.width += 20
                 textField.frame.origin.x -= 10
         }
@@ -178,28 +179,31 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         return memedImage
     }
     
+    
     func saveMeme(memedImage: UIImage) {
         let meme = Meme(topText: topText.text!, bottomText: bottomText.text!, image: imagePickerView.image!
             , memedImage: memedImage)
+        return
     }
     
     
-    @IBAction func takePhoto(sender: UIBarButtonItem) {
-        //Instantiate image picker controller, allow the current class to be its delegate, use the Camera as the source and present the view controller.
+    func selectImage(source: UIImagePickerControllerSourceType){
+        //Instantiate image picker controller, allow the current class to be its delegate, use the Camera as the source and present the view controller
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
-        imagePicker.sourceType = UIImagePickerControllerSourceType.Camera
+        imagePicker.sourceType = source
         self.presentViewController(imagePicker, animated: true, completion: nil)
+    }
+
+
+    @IBAction func takePhoto(sender: UIBarButtonItem) {
+        selectImage(UIImagePickerControllerSourceType.Camera)
     }
 
     
     @IBAction func pickAnImage(sender: UIBarButtonItem) {
-        //Instantiate image picker controller, allow the current class to be its delegate, use the Photolibrary as the source and present the view controller.
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = UIImagePickerControllerSourceType.PhotoLibrary
-        self.presentViewController(imagePicker, animated: true, completion: nil)
-    }
+        selectImage(UIImagePickerControllerSourceType.PhotoLibrary)
+   }
     
 
     @IBAction func bottomText(sender: UITextField) {
@@ -208,19 +212,27 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   
     
     @IBAction func shareImage(sender: UIBarButtonItem) {
-        //Generate the memed image and instantiate the meme class object with image, text and memed image
+        //Generate the memed image and pass it to the activity controller
         let memedImage = generateMemedImage()
-        //Instantiate the activity controller with the memedImage and present the controller
         let activityController = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
-        self.presentViewController(activityController, animated: true, completion: nil)
-        //activityController.completionWithItemsHandler(
         
+        //If user completes action in view controller save the Meme and dismiss the view controller
+        activityController.completionWithItemsHandler = {
+            activity, completed, items, error in
+            if completed {
+                self.saveMeme(memedImage)
+                self.dismissViewControllerAnimated(true, completion: nil)
+            }
+        }
+        
+        //Present the controller
+        self.presentViewController(activityController, animated: true, completion: nil)
     }
+    
     
     @IBAction func cancelAction(sender: UIBarButtonItem) {
         //Reset screen to initial parameters
         setFirstView()
     }
-    
 }
 
