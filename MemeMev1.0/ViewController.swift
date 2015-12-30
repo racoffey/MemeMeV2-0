@@ -67,11 +67,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //Reset image
         imagePickerView.image = nil
         
-        //Add subviews in order to secure layer hierachy
-        view.addSubview(imagePickerView)
-        view.addSubview(topText)
-        view.addSubview(bottomText)
-        
         return
     }
     
