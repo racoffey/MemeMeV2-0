@@ -9,13 +9,6 @@
 import UIKit
 
 
-struct Meme {
-    var topText: String
-    var bottomText: String
-    var image: UIImage
-    var memedImage: UIImage
-}
-
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, UITextFieldDelegate {
     
     @IBOutlet weak var imagePickerView: UIImageView!
@@ -181,8 +174,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func saveMeme(memedImage: UIImage) {
+        print("Reached save Meme function.")
         let meme = Meme(topText: topText.text!, bottomText: bottomText.text!, image: imagePickerView.image!
             , memedImage: memedImage)
+        
+        //Add Meme to Memes array on the AppDelegate
+        (UIApplication.sharedApplication().delegate as! AppDelegate).memes.append(meme)
+        
+        print (meme)
+        
         return
     }
     
@@ -212,14 +212,17 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
   
     
     @IBAction func shareImage(sender: UIBarButtonItem) {
+        print("Arrived at shareImage")
         //Generate the memed image and pass it to the activity controller
         let memedImage = generateMemedImage()
         let activityController = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
         
         //If user completes action in view controller save the Meme and dismiss the view controller
+        print("Reached activity controller")
         activityController.completionWithItemsHandler = {
             activity, completed, items, error in
             if completed {
+                print("About to save Meme")
                 self.saveMeme(memedImage)
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
@@ -232,7 +235,8 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func cancelAction(sender: UIBarButtonItem) {
         //Reset screen to initial parameters
-        setFirstView()
+        //setFirstView()
+        self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
 
