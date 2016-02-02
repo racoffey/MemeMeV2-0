@@ -29,7 +29,7 @@ class MemeTableViewController: UIViewController, UITableViewDataSource, UITableV
         print("Reached view will appear")
         let applicationDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
         memes = applicationDelegate.memes
-        self.reloadInputViews()
+        //self.tableView.reloadData()
         print(memes)
     }
     

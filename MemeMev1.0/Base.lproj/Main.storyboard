@@ -74,7 +74,21 @@
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
-                    <navigationItem key="navigationItem" id="wVD-81-zPb"/>
+                    <navigationItem key="navigationItem" id="wVD-81-zPb">
+                        <barButtonItem key="rightBarButtonItem" style="plain" id="Obj-95-r6O">
+                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="tbE-Ps-Ukl">
+                                <rect key="frame" x="447" y="7" width="133" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <state key="normal" title="+"/>
+                            </button>
+                            <connections>
+                                <segue destination="BYZ-38-t0r" kind="popoverPresentation" popoverAnchorBarButtonItem="Obj-95-r6O" id="cBZ-tg-pAa">
+                                    <popoverArrowDirection key="popoverArrowDirection" up="YES" down="YES" left="YES" right="YES"/>
+                                </segue>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="USF-Xu-N6Z" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -266,7 +280,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-14" y="309"/>
+            <point key="canvasLocation" x="-95" y="-169"/>
         </scene>
         <!--Meme Detail View Controller-->
         <scene sceneID="hWQ-h7-bUd">
@@ -359,4 +373,7 @@
             <point key="canvasLocation" x="737" y="309"/>
         </scene>
     </scenes>
+    <inferredMetricsTieBreakers>
+        <segue reference="cBZ-tg-pAa"/>
+    </inferredMetricsTieBreakers>
 </document>

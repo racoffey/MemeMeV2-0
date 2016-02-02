@@ -28,6 +28,7 @@ class MemeCollectionViewController: UICollectionViewController {
         print("Reached view will appear")
         let applicationDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
         memes = applicationDelegate.memes
+        collectionView?.reloadData()
         print(memes)
     }
     
@@ -42,9 +43,9 @@ class MemeCollectionViewController: UICollectionViewController {
         let meme = self.memes[indexPath.row]
         
         // Set the name and image
-        cell.topTextLabel.text = "Hello"
-        //cell.bottomTextLabel.text = meme.bottomText
-        //cell.memedImageView?.image = meme.memedImage
+        cell.topTextLabel.text = meme.topText
+        cell.bottomTextLabel.text = meme.bottomText
+        cell.memedImageView?.image = meme.memedImage
         print("Cell returned")
         return cell
     }
