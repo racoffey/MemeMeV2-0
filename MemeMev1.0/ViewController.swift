@@ -1,6 +1,6 @@
 //
 //  ViewController.swift
-//  MemeMev1.0
+//  MemeMev2.0
 //
 //  Created by Robert Coffey on 06/12/2015.
 //  Copyright © 2015 Robert Coffey. All rights reserved.
@@ -127,7 +127,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             resizePhoto.enabled = true
         }
         dismissViewControllerAnimated(true, completion: nil)
-        print("Retutning from image picker controller")
     }
     
     
@@ -143,7 +142,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if textField.text == "TOP" || textField.text == "BOTTOM" {
            textField.text = ""
         }
-        print("Returning from text field did begin editing")
         return
     }
     

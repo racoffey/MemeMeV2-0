@@ -1,6 +1,6 @@
 //
 //  AppDelegate.swift
-//  MemeMev1.0
+//  MemeMev2.0
 //
 //  Created by Robert Coffey on 06/12/2015.
 //  Copyright © 2015 Robert Coffey. All rights reserved.

@@ -1,6 +1,6 @@
 //
 //  Meme.swift
-//  MemeMev1.0
+//  MemeMev2.0
 //
 //  Created by Robert Coffey on 16/01/2016.
 //  Copyright © 2016 Robert Coffey. All rights reserved.
