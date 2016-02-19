@@ -11,52 +11,67 @@ import UIKit
 
 class MemeCollectionViewController: UICollectionViewController {
     
-    //Add outlet for flowLayout
+    //Loads meme struct from AppDelegate
+    var memes: [Meme]! {
+        let object = UIApplication.sharedApplication().delegate
+        let appDelegate = object as! AppDelegate
+        return appDelegate.memes
+    }
     
-    var memes: [Meme]!
+    //Outlet for flowLayout
+    @IBOutlet weak var flowLayout: UICollectionViewFlowLayout!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let applicationDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
-        memes = applicationDelegate.memes
-        print(memes)
+        //Establish layout parameters for collection view. View dimensioned to show 3 meme images across narrowest screen dimension
+        let space: CGFloat = 3.0
+        var dimension = view.frame.size.width
+        if UIDevice.currentDevice().orientation.isPortrait {
+            dimension = (view.frame.size.width - (2 * space)) / 3.0
+        }
+        else {
+            dimension = (view.frame.size.height - (2 * space)) / 3.0
+        }
         
+        flowLayout.minimumInteritemSpacing = space
+        flowLayout.minimumLineSpacing = space
+        flowLayout.itemSize = CGSizeMake(dimension, dimension)
     }
     
     override func viewWillAppear(animated: Bool) {
-        print("Reached view will appear")
-        let applicationDelegate = (UIApplication.sharedApplication().delegate as! AppDelegate)
-        memes = applicationDelegate.memes
+        //Data reloaded each time view appears to ensure latest data is always presented
         collectionView?.reloadData()
-        print(memes)
     }
     
-    // MARK: Collection View Data Source
+    // Provide number of items to be show
     override func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return self.memes.count
     }
     
+    // Populate rows based on meme content. Only image is used
     override func collectionView(collectionView: UICollectionView, cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("MemeCollectionCell", forIndexPath: indexPath) as! MemeCollectionViewCell
         let meme = self.memes[indexPath.row]
-        
-        // Set the name and image
-        cell.topTextLabel.text = meme.topText
-        cell.bottomTextLabel.text = meme.bottomText
         cell.memedImageView?.image = meme.memedImage
-        print("Cell returned")
+
         return cell
     }
     
+    // Instantiate Meme Detail View Controller when meme selected and pass selected meme to this controller
     override func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath:NSIndexPath)
     {
-        
         let detailController = self.storyboard!.instantiateViewControllerWithIdentifier("MemeDetailViewController") as! MemeDetailViewController
         detailController.meme = self.memes[indexPath.row]
         self.navigationController!.pushViewController(detailController, animated: true)
-        
+    }
+    
+    //When device is rotated invalidate collection view layout to trigger updated layout and reload data
+    override func willRotateToInterfaceOrientation(toInterfaceOrientation: UIInterfaceOrientation, duration: NSTimeInterval) {
+        collectionViewLayout.invalidateLayout()
+        collectionView?.reloadData()
     }
     
 }

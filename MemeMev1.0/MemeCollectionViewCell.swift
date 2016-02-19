@@ -11,10 +11,7 @@ import UIKit
 
 class MemeCollectionViewCell: UICollectionViewCell {
     
+    //Only meme image view used in collection view cell
     @IBOutlet weak var memedImageView: UIImageView!
-    @IBOutlet weak var topTextLabel: UILabel!
-    @IBOutlet weak var bottomTextLabel: UILabel!
-    
-    //@IBOutlet weak var schemeLabel: UILabel!
-    
+
 }

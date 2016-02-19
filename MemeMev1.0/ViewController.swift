@@ -18,6 +18,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     @IBOutlet weak var shareButton: UIBarButtonItem!
     @IBOutlet weak var toolBar: UIToolbar!
     @IBOutlet weak var navBar: UINavigationBar!
+    @IBOutlet weak var resizePhoto: UIBarButtonItem!
     
     
     //Define default textfield parameters
@@ -56,10 +57,10 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         //Hide share button until image is selected
         shareButton.enabled = false
+        resizePhoto.enabled = false
         
         //Reset image
         imagePickerView.image = nil
-        
         return
     }
     
@@ -118,13 +119,15 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func imagePickerController(picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : AnyObject]){
-        //Assign image from image picker to this class, scaling it to fit in the image view. Share button is enabled and picker controller is dismissed.
+        //Assign image from image picker to this class, scaling it to fit in the image view. Share and resize buttons are enabled and picker controller is dismissed.
         if let image = info["UIImagePickerControllerOriginalImage"] as? UIImage {
             imagePickerView.contentMode = .ScaleAspectFit
             imagePickerView.image = image
             shareButton.enabled = true
+            resizePhoto.enabled = true
         }
         dismissViewControllerAnimated(true, completion: nil)
+        print("Retutning from image picker controller")
     }
     
     
@@ -140,6 +143,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         if textField.text == "TOP" || textField.text == "BOTTOM" {
            textField.text = ""
         }
+        print("Returning from text field did begin editing")
         return
     }
     
@@ -174,14 +178,12 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     
     func saveMeme(memedImage: UIImage) {
-        print("Reached save Meme function.")
+        //Create meme object
         let meme = Meme(topText: topText.text!, bottomText: bottomText.text!, image: imagePickerView.image!
-            , memedImage: memedImage)
+            , memedImage: memedImage, contentSizing: imagePickerView.contentMode)
         
         //Add Meme to Memes array on the AppDelegate
         (UIApplication.sharedApplication().delegate as! AppDelegate).memes.append(meme)
-        
-        print (meme)
         
         return
     }
@@ -210,19 +212,25 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         //Needed to secure correct functioning of BottomText notification
     }
   
+    @IBAction func resizePhoto(sender: AnyObject) {
+        //Button allows user to toggle between Scale Aspect Fit and Scale Aspect Fill content modes
+        if (imagePickerView.contentMode == .ScaleAspectFit){
+            imagePickerView.contentMode = .ScaleAspectFill
+        }
+        else {
+            imagePickerView.contentMode = .ScaleAspectFit
+        }
+    }
     
     @IBAction func shareImage(sender: UIBarButtonItem) {
-        print("Arrived at shareImage")
         //Generate the memed image and pass it to the activity controller
         let memedImage = generateMemedImage()
         let activityController = UIActivityViewController(activityItems: [memedImage], applicationActivities: nil)
         
         //If user completes action in view controller save the Meme and dismiss the view controller
-        print("Reached activity controller")
         activityController.completionWithItemsHandler = {
             activity, completed, items, error in
             if completed {
-                print("About to save Meme")
                 self.saveMeme(memedImage)
                 self.dismissViewControllerAnimated(true, completion: nil)
             }
@@ -235,7 +243,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     @IBAction func cancelAction(sender: UIBarButtonItem) {
         //Reset screen to initial parameters
-        //setFirstView()
         self.dismissViewControllerAnimated(true, completion: nil)
     }
 }
